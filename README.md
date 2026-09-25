@@ -1,3 +1,5 @@
+> **BerryBrowser** — this is OneBerryWiki's fork of Tencent BrowserSkill. See [BERRY.md](BERRY.md) for what differs and how releases are made.
+
 # BrowserSkill
 
 <p align="center">

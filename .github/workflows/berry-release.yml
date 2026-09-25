@@ -1,0 +1,62 @@
+# BerryBrowser: build the extension package and publish it as a GitHub Release.
+# Triggered by tags like v0.3.1-berry.1 (upstream tags such as ext-v* are not matched).
+name: BerryBrowser release
+
+on:
+  push:
+    tags:
+      - "v*-berry.*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extension:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build extension zip
+        run: pnpm ext:build:zip
+
+      - name: Rename package
+        id: pkg
+        run: |
+          version="$(node -p "require('./apps/extension/package.json').version")"
+          suffix="$(sed -n 's/^const BERRY_RELEASE = "\(.*\)";$/\1/p' apps/extension/wxt.config.ts)"
+          name="BerryBrowser-${version}-${suffix}.zip"
+          cp "apps/extension/dist/browser-skillextension-${version}-chrome.zip" "$name"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          echo "tag=v${version}-${suffix}" >> "$GITHUB_OUTPUT"
+
+      - name: Check tag matches the source
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          test "${GITHUB_REF_NAME}" = "${{ steps.pkg.outputs.tag }}" || {
+            echo "tag ${GITHUB_REF_NAME} does not match source version ${{ steps.pkg.outputs.tag }}"; exit 1; }
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" "${{ steps.pkg.outputs.name }}" LICENSE \
+            --title "BerryBrowser ${GITHUB_REF_NAME#v}" \
+            --notes "BerryBrowser extension for OneBerryWiki, based on Tencent BrowserSkill. Install: unzip, open chrome://extensions, enable Developer mode, click Load unpacked and choose the unzipped folder."
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        with:
+          name: ${{ steps.pkg.outputs.name }}
+          path: ${{ steps.pkg.outputs.name }}
