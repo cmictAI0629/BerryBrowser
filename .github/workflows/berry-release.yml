@@ -36,7 +36,8 @@ jobs:
           version="$(node -p "require('./apps/extension/package.json').version")"
           suffix="$(sed -n 's/^const BERRY_RELEASE = "\(.*\)";$/\1/p' apps/extension/wxt.config.ts)"
           name="BerryBrowser-${version}-${suffix}.zip"
-          cp "apps/extension/dist/browser-skillextension-${version}-chrome.zip" "$name"
+          # wxt names the zip after version_name (e.g. 0.3.1-berry.1)
+          cp apps/extension/dist/browser-skillextension-*-chrome.zip "$name"
           echo "name=$name" >> "$GITHUB_OUTPUT"
           echo "tag=v${version}-${suffix}" >> "$GITHUB_OUTPUT"
 
