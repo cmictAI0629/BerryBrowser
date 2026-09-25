@@ -15,9 +15,9 @@ export const REMOTE_AUTH_PROTOCOL_PREFIX = "bsk-auth.";
 
 export function parseRemoteEndpoint(input: string): RemoteEndpoint {
   const url = new URL(input.trim());
-  const loopback = ["127.0.0.1", "localhost", "[::1]"].includes(url.hostname);
-  if (url.protocol !== "wss:" && !(url.protocol === "ws:" && loopback)) {
-    throw new Error("Remote connections require WSS (WS is allowed only on loopback)");
+  // OneBerryWiki: allow plain ws:// on any host (IP + HTTP deployments without a trusted certificate).
+  if (url.protocol !== "wss:" && url.protocol !== "ws:") {
+    throw new Error("Remote connections require WS or WSS");
   }
   if (url.username || url.password || url.search) {
     throw new Error("Credentials and query parameters are not allowed in the server URL");
