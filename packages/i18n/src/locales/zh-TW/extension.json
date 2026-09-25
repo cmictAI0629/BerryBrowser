@@ -2,7 +2,7 @@
   "popup": {
     "interactionCompatibilityWarning": "已連線至舊版 Daemon（通訊協定 v{{cliProtocol}}）。部分自動化設定需要更新 CLI 和 Daemon 才能完整生效。",
     "brandCategory": "Browser Automation",
-    "brandName": "BrowserSkill",
+    "brandName": "BerryBrowser",
     "stateLabel": {
       "disconnected": "未連線",
       "connecting": "連線中…",
@@ -11,8 +11,8 @@
       "disabled": "連線已關閉"
     },
     "stateDetail": {
-      "disconnected": "請先開啟 BrowserSkill。",
-      "connecting": "正在連線 BrowserSkill…",
+      "disconnected": "請先開啟 BerryBrowser。",
+      "connecting": "正在連線 BerryBrowser…",
       "connected": "可接收自動化工作。",
       "version_skew": "通訊協定版本不同，請盡快升級。"
     },
@@ -23,7 +23,7 @@
       "version_skew": "可升級",
       "disabled": "Off"
     },
-    "connectionToggleTitle": "BrowserSkill 連線",
+    "connectionToggleTitle": "BerryBrowser 連線",
     "controlHintsToggleTitle": "控制提示",
     "controlHintsToggleHint": "Agent 控制頁面時顯示提示條和橙色閃光。",
     "controlHintsInfoLabel": "控制提示說明",
@@ -59,7 +59,7 @@
       "title": "瀏覽器名稱",
       "placeholder": "例如：工作帳號",
       "save": "儲存",
-      "hint": "請使用唯一名稱，方便向 Agent 指定瀏覽器。儲存時 BrowserSkill 會短暫重新連線。",
+      "hint": "請使用唯一名稱，方便向 Agent 指定瀏覽器。儲存時 BerryBrowser 會短暫重新連線。",
       "busyHint": "目前瀏覽器有任務執行中，任務結束後即可修改名稱。",
       "instanceIdError": "名稱不能使用 8 位十六進位執行個體 ID 格式。"
     },
@@ -74,7 +74,7 @@
       "copyButton": "複製錄製指令",
       "copied": "已複製",
       "hintDisconnected": "連線後可用",
-      "promptTemplate": "用 BrowserSkill 的 `bsk` CLI 錄製我接下來的瀏覽器操作。\n\n步驟：\n1. 執行：{{command}}\n2. 你確認已開始後，我會在開啟的視窗裡自行操作。\n3. 我按下「完成」後，讀取寫出的 `./trace` 目錄套件（`trace.json` + `states/`），總結我做了什麼。"
+      "promptTemplate": "用 BerryBrowser 的 `bsk` CLI 錄製我接下來的瀏覽器操作。\n\n步驟：\n1. 執行：{{command}}\n2. 你確認已開始後，我會在開啟的視窗裡自行操作。\n3. 我按下「完成」後，讀取寫出的 `./trace` 目錄套件（`trace.json` + `states/`），總結我做了什麼。"
     },
     "interaction": {
       "title": "自動化設定",
@@ -127,7 +127,7 @@
       "hint": "確認這是你要使用的瀏覽器設定檔，再將指令傳給 Agent。",
       "copyButton": "複製設定檔指令",
       "copyFailed": "無法複製指令，請再試一次。",
-      "promptTemplate": "本次工作請使用此瀏覽器設定檔中的 BrowserSkill。每次為本工作建立新工作階段時，請依使用的介面執行：\nCLI：{{command}}\nDeepSeek Harness：{{toolCall}}\n使用 DeepSeek Harness 時，請呼叫上述工具，不要另外執行 CLI 指令。\n若此實例未連線，請停止並要求我重新連線此設定檔。請勿省略 --browser / browser，也不要切換至其他實例。"
+      "promptTemplate": "本次工作請使用此瀏覽器設定檔中的 BerryBrowser。每次為本工作建立新工作階段時，請依使用的介面執行：\nCLI：{{command}}\nDeepSeek Harness：{{toolCall}}\n使用 DeepSeek Harness 時，請呼叫上述工具，不要另外執行 CLI 指令。\n若此實例未連線，請停止並要求我重新連線此設定檔。請勿省略 --browser / browser，也不要切換至其他實例。"
     }
   },
   "controlOverlay": {
@@ -143,7 +143,7 @@
     "autoDeny": "{{count}} 秒後自動拒絕",
     "deny": "拒絕",
     "allow": "允許",
-    "notificationTitle": "BrowserSkill：Agent 請求借用分頁",
+    "notificationTitle": "BerryBrowser：Agent 請求借用分頁",
     "notificationBody": "請在瀏覽器中允許或拒絕對「{{tabTitle}}」的借用。"
   },
   "helpRequest": {
@@ -156,7 +156,7 @@
     "collapse": "摺疊",
     "expand": "展開",
     "dragHandle": "拖曳以移動",
-    "notificationTitle": "BrowserSkill：Agent 需要你的協助"
+    "notificationTitle": "BerryBrowser：Agent 需要你的協助"
   },
   "recordOverlay": {
     "recording": "正在錄製你的操作",
@@ -238,8 +238,8 @@
     "partialLabel": "部分記錄",
     "partialDescription": "本次稽核從 {{time}} 開始。中途暫停的時間段未記錄，詳細位置請見下方時間軸。",
     "inputRedacted": "輸入內容已隱藏",
-    "empty": "尚無工作記錄。之後透過 BrowserSkill 執行的操作會顯示在這裡。",
-    "disconnected": "本機服務未連線。啟動 BrowserSkill 本機服務後再試一次，既有記錄仍會儲存在電腦上。",
+    "empty": "尚無工作記錄。之後透過 BerryBrowser 執行的操作會顯示在這裡。",
+    "disconnected": "本機服務未連線。啟動 BerryBrowser 本機服務後再試一次，既有記錄仍會儲存在電腦上。",
     "unsupported": "目前的本機服務尚不支援操作稽核，請更新 bsk 後再試一次。",
     "requestFailed": "無法讀取或儲存稽核記錄。請檢查本機儲存空間，確認工作仍存在且未在執行後再試一次。",
     "privacyShort": "僅儲存在本機，預設保留 30 天。輸入內容已隱藏。",
@@ -332,7 +332,7 @@
     "disconnected": "請先連線瀏覽器，再開始偵錯。",
     "emptyTitle": "從一項偵錯工作開始",
     "emptyHelp": "告訴 Agent 網站網址與遇到的問題，Agent 就能建立工作並開始擷取。",
-    "prompt": "請使用 BrowserSkill 的網站偵錯功能。在開啟頁面並重現問題前先開始擷取，記錄請求、回應、主控台訊息與頁面情境，再依據證據調查問題。最後停止擷取並匯出結果，讓我檢視。",
+    "prompt": "請使用 BerryBrowser 的網站偵錯功能。在開啟頁面並重現問題前先開始擷取，記錄請求、回應、主控台訊息與頁面情境，再依據證據調查問題。最後停止擷取並匯出結果，讓我檢視。",
     "copyPrompt": "複製 Agent 指令",
     "copied": "已複製",
     "copyFailed": "複製失敗，請再試一次。",

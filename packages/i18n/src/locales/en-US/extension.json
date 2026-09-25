@@ -2,7 +2,7 @@
   "popup": {
     "interactionCompatibilityWarning": "Connected to an older daemon (protocol v{{cliProtocol}}). Update the CLI and daemon for full support of Automation settings.",
     "brandCategory": "Browser Automation",
-    "brandName": "BrowserSkill",
+    "brandName": "BerryBrowser",
     "stateLabel": {
       "disconnected": "Disconnected",
       "connecting": "Connecting…",
@@ -11,8 +11,8 @@
       "disabled": "Connection off"
     },
     "stateDetail": {
-      "disconnected": "Open BrowserSkill to connect.",
-      "connecting": "Connecting to BrowserSkill…",
+      "disconnected": "Open BerryBrowser to connect.",
+      "connecting": "Connecting to BerryBrowser…",
       "connected": "Ready for automation tasks.",
       "version_skew": "Protocol versions differ. Please upgrade."
     },
@@ -23,7 +23,7 @@
       "version_skew": "Upgradable",
       "disabled": "Off"
     },
-    "connectionToggleTitle": "BrowserSkill connection",
+    "connectionToggleTitle": "BerryBrowser connection",
     "controlHintsToggleTitle": "Control hints",
     "controlHintsToggleHint": "Show the status pill and orange glow while the Agent controls a page.",
     "controlHintsInfoLabel": "About control hints",
@@ -59,7 +59,7 @@
       "title": "Browser name",
       "placeholder": "e.g. Work profile",
       "save": "Save",
-      "hint": "Use a unique name when talking to your agent. Saving briefly reconnects BrowserSkill.",
+      "hint": "Use a unique name when talking to your agent. Saving briefly reconnects BerryBrowser.",
       "busyHint": "Wait for active browser tasks to finish before changing this name.",
       "instanceIdError": "Choose a name other than an 8-character hexadecimal instance ID."
     },
@@ -74,7 +74,7 @@
       "copyButton": "Copy recording instructions",
       "copied": "Copied",
       "hintDisconnected": "Available when connected",
-      "promptTemplate": "Use BrowserSkill's `bsk` CLI to record the browser actions I'm about to demonstrate.\n\nSteps:\n1. Run: {{command}}\n2. Once you confirm it's started, I'll operate in the opened window myself.\n3. After I click Finish, read the written `./trace` bundle (`trace.json` + `states/`) and summarize what I did."
+      "promptTemplate": "Use BerryBrowser's `bsk` CLI to record the browser actions I'm about to demonstrate.\n\nSteps:\n1. Run: {{command}}\n2. Once you confirm it's started, I'll operate in the opened window myself.\n3. After I click Finish, read the written `./trace` bundle (`trace.json` + `states/`) and summarize what I did."
     },
     "interaction": {
       "title": "Automation settings",
@@ -95,13 +95,13 @@
     "remoteError": "Pairing did not complete. Check the server connection or try a new pairing link.",
     "remoteNeedsAttention": "Needs attention",
     "remoteUnknown": "Connection settings unavailable",
-    "remoteStorageError": "Could not read connection settings. BrowserSkill will retry. You can explicitly select the local daemon to recover.",
+    "remoteStorageError": "Could not read connection settings. BerryBrowser will retry. You can explicitly select the local daemon to recover.",
     "remoteExpires": "Authorization expires: {{date}}",
     "remoteRenewing": "Renewing browser authorization…",
-    "remoteRenewalFailed": "Renewal could not reach the service or complete successfully. BrowserSkill will retry; the current authorization remains usable until it expires.",
+    "remoteRenewalFailed": "Renewal could not reach the service or complete successfully. BerryBrowser will retry; the current authorization remains usable until it expires.",
     "remoteRejected": "The server rejected authorization. Check the server or use a new pairing link.",
     "remoteExpired": "Authorization has expired. Use a new pairing link to reconnect.",
-    "remoteUnconfirmed": "The last confirmed authorization has expired, but a renewal may have succeeded. BrowserSkill is retrying the pending renewal; check the server if this continues.",
+    "remoteUnconfirmed": "The last confirmed authorization has expired, but a renewal may have succeeded. BerryBrowser is retrying the pending renewal; check the server if this continues.",
     "connectionSettings": "Connection settings",
     "connectionMode": "Connection mode",
     "connectionLocal": "Local",
@@ -127,7 +127,7 @@
       "hint": "Check that this is the browser profile you want to use, then send its instructions to your agent.",
       "copyButton": "Copy profile instructions",
       "copyFailed": "Could not copy the instructions. Please try again.",
-      "promptTemplate": "Use BrowserSkill in this browser profile for this task. Start every new session for this task with the appropriate interface:\nCLI: {{command}}\nDeepSeek Harness: {{toolCall}}\nIn DeepSeek Harness, use the tool call instead of running the CLI command separately.\nIf this instance is not connected, stop and ask me to reconnect this profile. Do not omit --browser / browser or switch to another instance."
+      "promptTemplate": "Use BerryBrowser in this browser profile for this task. Start every new session for this task with the appropriate interface:\nCLI: {{command}}\nDeepSeek Harness: {{toolCall}}\nIn DeepSeek Harness, use the tool call instead of running the CLI command separately.\nIf this instance is not connected, stop and ask me to reconnect this profile. Do not omit --browser / browser or switch to another instance."
     }
   },
   "controlOverlay": {
@@ -143,7 +143,7 @@
     "autoDeny": "Request expires in {{count}}s",
     "deny": "Deny",
     "allow": "Allow",
-    "notificationTitle": "BrowserSkill: Agent wants to borrow a tab",
+    "notificationTitle": "BerryBrowser: Agent wants to borrow a tab",
     "notificationBody": "Approve or deny the borrow of \"{{tabTitle}}\" in your browser."
   },
   "helpRequest": {
@@ -156,7 +156,7 @@
     "collapse": "Collapse",
     "expand": "Expand",
     "dragHandle": "Drag to move",
-    "notificationTitle": "BrowserSkill: Agent needs your help"
+    "notificationTitle": "BerryBrowser: Agent needs your help"
   },
   "recordOverlay": {
     "recording": "Recording your actions",
@@ -238,8 +238,8 @@
     "partialLabel": "Partial history",
     "partialDescription": "Recording started at {{time}}. Paused intervals were not recorded; see the timeline below.",
     "inputRedacted": "Input content hidden",
-    "empty": "No tasks recorded yet. Future BrowserSkill operations will appear here.",
-    "disconnected": "The local service is disconnected. Start the BrowserSkill service and retry. Existing history remains on your computer.",
+    "empty": "No tasks recorded yet. Future BerryBrowser operations will appear here.",
+    "disconnected": "The local service is disconnected. Start the BerryBrowser service and retry. Existing history remains on your computer.",
     "unsupported": "This local service does not support operation auditing. Update bsk and retry.",
     "requestFailed": "Could not read or save audit history. Check local storage and task availability, or retry after the task ends.",
     "privacyShort": "Saved locally for 30 days. Input content is hidden.",
@@ -332,7 +332,7 @@
     "disconnected": "Connect the browser to start debugging.",
     "emptyTitle": "Start with a debugging task",
     "emptyHelp": "Tell your agent the website and the issue. It can create a task and start capture.",
-    "prompt": "Use BrowserSkill website debugging. Start capture before visiting the page and reproducing the issue. Record requests, responses, console and page context; investigate using the evidence. Stop capture and export the results for me to review.",
+    "prompt": "Use BerryBrowser website debugging. Start capture before visiting the page and reproducing the issue. Record requests, responses, console and page context; investigate using the evidence. Stop capture and export the results for me to review.",
     "copyPrompt": "Copy agent prompt",
     "copied": "Copied",
     "copyFailed": "Copy failed. Try again.",

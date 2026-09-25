@@ -23,6 +23,9 @@ try {
 } catch {
   /* Source archives need not contain Git metadata. */
 }
+// OneBerryWiki: BerryBrowser release suffix, shown as the manifest version_name. The numeric
+// `version` stays equal to upstream so the daemon/gateway compatibility checks are unchanged.
+const BERRY_RELEASE = "berry.1";
 const LOGO_PATH = resolve(here, "assets/logo.png");
 
 const resolvePackageSource = (pkg: string) => resolve(here, `../../packages/${pkg}/src/index.ts`);
@@ -33,9 +36,10 @@ export default defineConfig({
   outDir: "dist",
   modules: ["@wxt-dev/module-react"],
   manifest: {
-    name: "BrowserSkill",
+    name: "BerryBrowser",
+    version_name: `${EXTENSION_VERSION}-${BERRY_RELEASE}`,
     description:
-      "Let AI agents use your logged-in browser in a separate Agent Window—without interrupting your work. Powered by the bsk CLI.",
+      "OneBerryWiki browser connector: let AI agents use your logged-in browser in a separate Agent Window. Based on BrowserSkill.",
     // Flat debugger sessions are required to address out-of-process iframes.
     minimum_chrome_version: "125",
     permissions: [
@@ -59,7 +63,7 @@ export default defineConfig({
       128: "icon/logo.png",
     },
     action: {
-      default_title: "BrowserSkill",
+      default_title: "BerryBrowser",
       default_icon: {
         16: "icon/logo.png",
         32: "icon/logo.png",
