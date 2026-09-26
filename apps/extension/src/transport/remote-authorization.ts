@@ -11,6 +11,10 @@ class AuthorizationRejected extends Error {}
 const RENEWAL_RETRY_MS = 60_000;
 const AUTHORIZATION_ALARM = "bsk-remote-authorization";
 
+function browserName(): string {
+  return /\bEdg\//.test(globalThis.navigator?.userAgent ?? "") ? "Edge" : "Chrome";
+}
+
 function newToken(): string {
   const bytes = crypto.getRandomValues(new Uint8Array(32));
   return btoa(String.fromCharCode(...bytes))
@@ -33,7 +37,8 @@ async function authorize(
     credentials: "omit",
     cache: "no-store",
     headers: { Authorization: `Bearer ${endpoint.token}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ action, next_token: nextToken, label: "Chrome · BrowserSkill" }),
+    // BerryBrowser: report the actual browser (Edge vs Chrome) and our brand as the device label.
+    body: JSON.stringify({ action, next_token: nextToken, label: `${browserName()} · BerryBrowser` }),
     signal: AbortSignal.timeout(10000),
   });
   if (response.status === 401 || response.status === 403)
