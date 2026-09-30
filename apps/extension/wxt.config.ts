@@ -25,7 +25,7 @@ try {
 }
 // OneBerryWiki: BerryBrowser release suffix, shown as the manifest version_name. The numeric
 // `version` stays equal to upstream so the daemon/gateway compatibility checks are unchanged.
-const BERRY_RELEASE = "berry.2";
+const BERRY_RELEASE = "berry.3";
 const LOGO_PATH = resolve(here, "assets/logo.png");
 
 const resolvePackageSource = (pkg: string) => resolve(here, `../../packages/${pkg}/src/index.ts`);

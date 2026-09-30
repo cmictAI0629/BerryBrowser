@@ -395,7 +395,7 @@ export function HelpRequestOverlay({ request }: Props) {
           background: #fff;
           border-radius: 16px;
           padding: 16px;
-          box-shadow: 0 12px 40px rgba(124,45,18,0.18), 0 2px 8px rgba(0,0,0,0.1);
+          box-shadow: 0 12px 40px rgba(8,47,73,0.2), 0 2px 8px rgba(0,0,0,0.1);
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
           transition:
             padding var(--bsk-help-duration) var(--bsk-help-ease),
@@ -617,7 +617,7 @@ export function HelpRequestOverlay({ request }: Props) {
         .bsk-help-btn-continue {
           cursor: pointer;
           border: none;
-          background: #f97316;
+          background: #0891b2;
           border-radius: 8px;
           font-size: 13px;
           font-weight: 600;

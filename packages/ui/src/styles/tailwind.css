@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+/* BerryBrowser：OneBerryWiki 配色，见 berry-theme.css */
+@import "./berry-theme.css";
 @custom-variant dark (&:is(.dark *));
 
 :root {

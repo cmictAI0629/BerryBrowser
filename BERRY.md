@@ -10,6 +10,11 @@ BerryBrowser is the browser extension used by [OneBerryWiki](https://github.com/
   certificate (`wss://` is still used when the gateway serves HTTPS).
 - User-visible branding: name, icon and UI strings say BerryBrowser. Internal identifiers
   (`bsk`, package names, storage keys) are unchanged to keep upstream merges simple.
+- OneBerryWiki colors: `packages/ui/src/styles/berry-theme.css` overrides the theme tokens (primary
+  `#0891b2`, cool gray surfaces, YaHei / PingFang font) with higher-specificity selectors, so
+  `tailwind.css` only gains one `@import`. The in-page overlays (`apps/extension/src/content/*Overlay.tsx`)
+  and `assets/function.svg` hard-code the accent color, so they were recolored directly; check them when
+  merging upstream.
 
 ## Branches and versions
 
