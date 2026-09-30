@@ -128,7 +128,13 @@
       "copyButton": "Copiar instruções do perfil",
       "copyFailed": "Não foi possível copiar as instruções. Tente novamente.",
       "promptTemplate": "Para esta tarefa, use o BerryBrowser neste perfil do navegador. Inicie cada nova sessão desta tarefa com a interface apropriada:\nCLI: {{command}}\nDeepSeek Harness: {{toolCall}}\nNo DeepSeek Harness, chame a ferramenta sem executar o comando CLI separadamente.\nSe esta instância não estiver conectada, pare e peça que eu reconecte este perfil. Não omita --browser / browser nem mude para outra instância."
-    }
+    },
+    "berryUnpaired": "Ainda não pareado com o OneBerryWiki",
+    "berryPairHint": "No OneBerryWiki, abra Habilidades · MCP · Conectores → Conectores, copie o link de pareamento e cole abaixo em Link de pareamento.",
+    "localAdvanced": "Conectar um agente local (avançado)",
+    "localAdvancedHint": "Para agentes executados neste computador, como OneBerry ou Claude Code. Requer o daemon bsk em execução local. A troca remove o pareamento com o OneBerryWiki; voltar ao remoto exige um novo link de pareamento.",
+    "localAdvancedSwitch": "Usar conexão local",
+    "backToRemote": "Voltar ao pareamento remoto"
   },
   "controlOverlay": {
     "status": "O agente está no controle",

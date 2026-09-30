@@ -86,29 +86,33 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-async function choose(name: "本机" | "远程") {
-  const button = screen.getByRole("button", { name });
+// BerryBrowser: remote pairing is the default form; local mode sits under "连接本机 Agent（高级）".
+async function useLocal() {
+  const button = screen.getByRole("button", { name: "改用本机连接" });
   await waitFor(() => expect((button as HTMLButtonElement).disabled).toBe(false));
   fireEvent.click(button);
+}
+function currentConnection() {
+  return document.querySelector('[data-slot="popup-current-connection"]')?.textContent;
 }
 function submit() {
   fireEvent.submit(document.querySelector("form")!);
 }
 
-it("only changes the form until saved, and cancels both mode and port drafts without writes", async () => {
+it("leads with pairing when unpaired and cancels local and pairing drafts without writes", async () => {
   render(<ConnectionSettings connectionEnabled />);
-  fireEvent.click(screen.getByText("连接设置"));
-  await choose("本机");
+  await waitFor(() => expect(currentConnection()).toBe("还没有和 OneBerryWiki 配对"));
+  expect(screen.getByText(/复制配对链接/)).toBeTruthy();
+  expect(screen.queryByText("无法连接，请确认 daemon 已启动且端口一致。")).toBeNull();
+  expect(screen.queryByLabelText("本机端口")).toBeNull();
+  await useLocal();
   fireEvent.change(screen.getByLabelText("本机端口"), { target: { value: "53300" } });
-  await choose("远程");
-  expect(document.querySelector('[data-slot="popup-current-connection"]')?.textContent).toBe(
-    "本机 · ws://127.0.0.1:52800",
-  );
+  fireEvent.click(screen.getByRole("button", { name: "取消修改" }));
   expect(screen.queryByLabelText("本机端口")).toBeNull();
   fireEvent.change(screen.getByLabelText("配对链接"), { target: { value: pairing } });
   expect(screen.getByText("将连接到：wss://other.example:8443/extension")).toBeTruthy();
   fireEvent.click(screen.getByRole("button", { name: "取消修改" }));
-  expect((screen.getByLabelText("本机端口") as HTMLInputElement).value).toBe("52800");
+  expect((screen.getByLabelText("配对链接") as HTMLInputElement).value).toBe("");
   expect(chrome.storage.local.set).not.toHaveBeenCalled();
   expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
 });
@@ -116,8 +120,7 @@ it("only changes the form until saved, and cancels both mode and port drafts wit
 it("submits pairing on Enter, preserves the disabled switch and shows the configured address", async () => {
   const user = userEvent.setup();
   render(<ConnectionSettings connectionEnabled={false} />);
-  fireEvent.click(screen.getByText("连接设置"));
-  await choose("远程");
+  await waitFor(() => expect(currentConnection()).toBe("还没有和 OneBerryWiki 配对"));
   await user.type(screen.getByLabelText("配对链接"), pairing);
   await user.keyboard("{Enter}");
   expect(await screen.findByText("配对成功，连接开关当前关闭。开启后即可连接。")).toBeTruthy();
@@ -135,8 +138,7 @@ it("submits pairing on Enter, preserves the disabled switch and shows the config
 
 it("rejects an invalid pairing link before messaging the background", async () => {
   render(<ConnectionSettings connectionEnabled />);
-  fireEvent.click(screen.getByText("连接设置"));
-  await choose("远程");
+  await waitFor(() => expect(currentConnection()).toBe("还没有和 OneBerryWiki 配对"));
   fireEvent.change(screen.getByLabelText("配对链接"), { target: { value: "https://example.com" } });
   submit();
   expect(await screen.findByText(/配对链接不完整或格式不正确/)).toBeTruthy();
@@ -155,8 +157,7 @@ it("shows progress and prevents duplicate pairing while the request is pending",
       }),
   );
   render(<ConnectionSettings connectionEnabled />);
-  fireEvent.click(screen.getByText("连接设置"));
-  await choose("远程");
+  await waitFor(() => expect(currentConnection()).toBe("还没有和 OneBerryWiki 配对"));
   fireEvent.change(screen.getByLabelText("配对链接"), { target: { value: pairing } });
   submit();
   submit();
@@ -164,7 +165,9 @@ it("shows progress and prevents duplicate pairing while the request is pending",
   expect((screen.getByRole("button", { name: "正在配对…" }) as HTMLButtonElement).disabled).toBe(
     true,
   );
-  expect((screen.getByRole("button", { name: "本机" }) as HTMLButtonElement).disabled).toBe(true);
+  expect((screen.getByRole("button", { name: "改用本机连接" }) as HTMLButtonElement).disabled).toBe(
+    true,
+  );
   await act(async () => {
     remote = endpoint;
     finish({ url: endpoint.url });
@@ -177,7 +180,7 @@ it("keeps the current grant and draft when pairing fails", async () => {
   vi.mocked(chrome.runtime.sendMessage).mockResolvedValueOnce({ error: "Unable to pair" });
   render(<ConnectionSettings connectionEnabled />);
   fireEvent.click(screen.getByText("连接设置"));
-  await choose("远程");
+  await waitFor(() => expect(currentConnection()).toBe(`远程 · ${endpoint.url}`));
   fireEvent.change(screen.getByLabelText("配对链接"), { target: { value: pairing } });
   submit();
   expect(await screen.findByText(/配对未完成/)).toBeTruthy();
@@ -192,7 +195,7 @@ it("keeps the remote grant when the proposed local port is invalid or cannot be 
   remote = endpoint;
   render(<ConnectionSettings connectionEnabled />);
   fireEvent.click(screen.getByText("连接设置"));
-  await choose("本机");
+  await useLocal();
   expect(screen.getByText(/再次连接远程需要新的配对链接/)).toBeTruthy();
   fireEvent.change(screen.getByLabelText("本机端口"), { target: { value: "65536" } });
   submit();
@@ -221,14 +224,15 @@ it("offers explicit local recovery when remote storage cannot be read", async ()
   fireEvent.click(screen.getByText("连接设置"));
   expect((await screen.findByRole("alert")).textContent).toContain("无法读取连接设置");
   expect(screen.getByText("无法读取连接设置")).toBeTruthy();
-  await choose("本机");
+  await useLocal();
   submit();
   expect(await screen.findByText("已切换到本机服务。")).toBeTruthy();
   expect(chrome.runtime.sendMessage).toHaveBeenCalledExactlyOnceWith({
     kind: "bsk-remote-authorization",
     pairing: null,
   });
-  expect(chrome.storage.local.set).not.toHaveBeenCalled();
+  // Only the local-mode flag is written; the unread port preference stays untouched.
+  expect(chrome.storage.local.set).toHaveBeenCalledExactlyOnceWith({ berryLocalMode: true });
 });
 
 it("shows remote-specific guidance for a disconnected remote connection", async () => {
@@ -265,4 +269,14 @@ it("does not declare an unconfirmed rotation invalid based on its old local expi
   fireEvent.click(screen.getByText("连接设置"));
   expect(await screen.findByText(/此前续期可能已成功/)).toBeTruthy();
   expect(screen.queryByText("授权已过期，请使用新的配对链接重新连接。")).toBeNull();
+});
+
+it("recognizes an existing live local connection instead of asking to pair", async () => {
+  render(<ConnectionSettings connectionEnabled connected />);
+  await waitFor(() => expect(currentConnection()).toBe("本机 · ws://127.0.0.1:52800"));
+  await waitFor(() =>
+    expect(chrome.storage.local.set).toHaveBeenCalledExactlyOnceWith({ berryLocalMode: true }),
+  );
+  expect(screen.queryByText(/复制配对链接/)).toBeNull();
+  expect(screen.getByRole("button", { name: "改回远程配对" })).toBeTruthy();
 });

@@ -15,6 +15,12 @@ BerryBrowser is the browser extension used by [OneBerryWiki](https://github.com/
   `tailwind.css` only gains one `@import`. The in-page overlays (`apps/extension/src/content/*Overlay.tsx`)
   and `assets/function.svg` hard-code the accent color, so they were recolored directly; check them when
   merging upstream.
+- Remote pairing first: the popup no longer offers a local / remote switch. Without a remote grant it
+  shows OneBerryWiki pairing guidance (instead of "daemon unreachable") with the pairing form open;
+  connecting to a local `bsk` daemon moved to a collapsed "local agent (advanced)" section in
+  `apps/extension/src/entrypoints/popup/connection-settings.tsx`. The `berryLocalMode` storage flag
+  records an explicit local choice (set automatically when a local connection is already live).
+  Popup tests follow this UI; `remote-endpoint.test.ts` expects `ws://` on any host.
 
 ## Branches and versions
 

@@ -128,7 +128,13 @@
       "copyButton": "프로필 지침 복사",
       "copyFailed": "지침을 복사하지 못했습니다. 다시 시도해 주세요.",
       "promptTemplate": "이 작업에는 이 브라우저 프로필의 BerryBrowser을 사용하세요. 이 작업의 새 세션을 시작할 때마다 해당 인터페이스를 사용하세요:\nCLI: {{command}}\nDeepSeek Harness: {{toolCall}}\nDeepSeek Harness에서는 CLI 명령을 별도로 실행하지 말고 도구 호출을 사용하세요.\n이 인스턴스가 연결되어 있지 않으면 중단하고 이 프로필을 다시 연결해 달라고 요청하세요. --browser / browser를 생략하거나 다른 인스턴스로 전환하지 마세요."
-    }
+    },
+    "berryUnpaired": "아직 OneBerryWiki와 페어링되지 않았습니다",
+    "berryPairHint": "OneBerryWiki의「스킬·MCP·커넥터 → 커넥터」에서 페어링 링크를 복사해 아래「페어링 링크」에 붙여 넣으세요.",
+    "localAdvanced": "로컬 에이전트 연결(고급)",
+    "localAdvancedHint": "OneBerry, Claude Code 등 이 컴퓨터에서 실행되는 에이전트용입니다. 로컬에서 bsk 데몬이 실행 중이어야 합니다. 전환하면 OneBerryWiki 페어링이 해제되며, 원격으로 되돌리려면 새 페어링 링크가 필요합니다.",
+    "localAdvancedSwitch": "로컬 연결 사용",
+    "backToRemote": "원격 페어링으로 돌아가기"
   },
   "controlOverlay": {
     "status": "에이전트가 제어 중",

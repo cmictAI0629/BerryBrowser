@@ -11,7 +11,6 @@ describe("remote pairing boundary", () => {
     });
   });
   it.each([
-    `ws://example.com/bsk#${token}`,
     `https://example.com/#${token}`,
     `wss://user:pass@example.com/#${token}`,
     `wss://example.com/?token=secret#${token}`,
@@ -19,12 +18,18 @@ describe("remote pairing boundary", () => {
   ])("rejects unsafe pairing %s", (input) => {
     expect(() => parseRemoteEndpoint(input)).toThrow();
   });
+  // BerryBrowser: ws:// is allowed on any host so IP + HTTP deployments can pair (see BERRY.md).
+  it("permits ws:// on a remote host", () => {
+    expect(parseRemoteEndpoint(`ws://10.0.0.8:15481/bsk#${token}`).url).toBe(
+      "ws://10.0.0.8:15481/bsk",
+    );
+  });
   it.each(["localhost", "127.0.0.1", "[::1]"])("permits local development on %s", (host) => {
     expect(parseRemoteEndpoint(`ws://${host}:8080/bsk#${token}`).url).toBe(`ws://${host}:8080/bsk`);
   });
   it("does not turn a corrupt remote preference into a local connection", () => {
     expect(readRemoteEndpoint(null)).toBeNull();
-    expect(() => readRemoteEndpoint({ url: "ws://public.example", token })).toThrow();
+    expect(() => readRemoteEndpoint({ url: "https://public.example", token })).toThrow();
   });
   it("sends credentials only to the paired endpoint via the subprotocol", () => {
     const calls: unknown[][] = [];

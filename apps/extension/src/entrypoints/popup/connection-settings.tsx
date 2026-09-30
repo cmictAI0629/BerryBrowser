@@ -12,6 +12,20 @@ import { SettingInfo } from "./setting-info";
 import { useDaemonPort } from "./use-daemon-port";
 
 type Mode = "local" | "remote";
+
+// BerryBrowser: pairing with OneBerryWiki (remote) is the primary path. Connecting to a local
+// bsk daemon is an opt-in advanced mode; the flag records that the user chose it on purpose,
+// so an unpaired extension shows pairing guidance instead of "daemon unreachable".
+const BERRY_LOCAL_MODE_KEY = "berryLocalMode";
+
+async function writeBerryLocalMode(value: boolean): Promise<void> {
+  if (typeof chrome === "undefined" || !chrome.storage?.local) return;
+  try {
+    await chrome.storage.local.set({ [BERRY_LOCAL_MODE_KEY]: value });
+  } catch {
+    // The flag only changes guidance text; connection state stays authoritative.
+  }
+}
 type Connection = {
   url: string;
   expiresAt?: string;
@@ -21,9 +35,12 @@ type Connection = {
 export function ConnectionSettings({
   connectionEnabled,
   disconnected = false,
+  connected = false,
 }: {
   connectionEnabled: boolean;
   disconnected?: boolean;
+  /** BerryBrowser: the transport is currently connected (used to recognize an existing local setup). */
+  connected?: boolean;
 }) {
   const { t } = useTranslation("extension");
   const port = useDaemonPort();
@@ -32,6 +49,8 @@ export function ConnectionSettings({
   const [storageError, setStorageError] = useState(false);
   // Selecting a form does not change the persisted connection.
   const [selection, setSelection] = useState<Mode | null>(null);
+  const [localOptIn, setLocalOptIn] = useState<boolean | null>(null);
+  const [settingsOpen, setSettingsOpen] = useState<boolean | null>(null);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<"format" | "pairing" | "local" | null>(null);
@@ -93,10 +112,47 @@ export function ConnectionSettings({
     };
   }, [read]);
 
+  useEffect(() => {
+    if (typeof chrome === "undefined" || !chrome.storage?.local) {
+      setLocalOptIn(false);
+      return;
+    }
+    let alive = true;
+    Promise.resolve(chrome.storage.local.get(BERRY_LOCAL_MODE_KEY))
+      .then((value) => {
+        if (alive) setLocalOptIn(value?.[BERRY_LOCAL_MODE_KEY] === true);
+      })
+      .catch(() => {
+        if (alive) setLocalOptIn(false);
+      });
+    const changed = (changes: Record<string, chrome.storage.StorageChange>, area: string) => {
+      if (area === "local" && BERRY_LOCAL_MODE_KEY in changes) {
+        setLocalOptIn(changes[BERRY_LOCAL_MODE_KEY]?.newValue === true);
+      }
+    };
+    chrome.storage.onChanged?.addListener(changed);
+    return () => {
+      alive = false;
+      chrome.storage.onChanged?.removeListener(changed);
+    };
+  }, []);
+
   const activeMode: Mode = connection || storageError ? "remote" : "local";
-  const mode = selection ?? activeMode;
-  const switchingToLocal = mode === "local" && activeMode !== "local";
-  const dirty = mode !== activeMode || (mode === "local" ? port.dirty : !!draft.trim());
+  // Without a remote grant the transport falls back to the local daemon. Unless the user opted
+  // into local mode, treat that as "not paired yet" and keep the pairing form in front.
+  const unpaired =
+    ready && !storageError && activeMode === "local" && localOptIn === false && !connected;
+  // Installs from before the flag existed: a live local connection means the user runs a daemon
+  // on purpose, so record the choice instead of asking them to pair.
+  useEffect(() => {
+    if (ready && !storageError && activeMode === "local" && connected && localOptIn === false) {
+      void writeBerryLocalMode(true);
+    }
+  }, [ready, storageError, activeMode, connected, localOptIn]);
+  const baseMode: Mode = activeMode === "local" && localOptIn !== true ? "remote" : activeMode;
+  const mode = selection ?? baseMode;
+  const switchingToLocal = mode === "local" && (activeMode !== "local" || localOptIn !== true);
+  const dirty = mode !== baseMode || (mode === "local" ? port.dirty : !!draft.trim());
   let destination: string | null = null;
   try {
     if (draft.trim()) destination = parseRemoteEndpoint(draft).url;
@@ -130,6 +186,7 @@ export function ConnectionSettings({
             pairing: null,
           });
           if (!reply || reply.error) throw new Error("Local selection failed");
+          await writeBerryLocalMode(true);
           await read();
         }
       } else {
@@ -138,6 +195,7 @@ export function ConnectionSettings({
           pairing: draft,
         });
         if (!reply || reply.error) throw new Error("Pairing failed");
+        if (localOptIn) await writeBerryLocalMode(false);
         await read();
       }
       if (!mounted.current) return;
@@ -178,10 +236,12 @@ export function ConnectionSettings({
     ? t("popup.connectionLoading")
     : storageError
       ? t("popup.remoteUnknown")
-      : t("popup.connectionCurrent", {
-          mode: t(activeMode === "local" ? "popup.connectionLocal" : "popup.connectionRemote"),
-          address: connection?.url ?? localAddress,
-        });
+      : unpaired
+        ? t("popup.berryUnpaired")
+        : t("popup.connectionCurrent", {
+            mode: t(activeMode === "local" ? "popup.connectionLocal" : "popup.connectionRemote"),
+            address: connection?.url ?? localAddress,
+          });
   const saveDisabled =
     !ready ||
     busy ||
@@ -195,7 +255,15 @@ export function ConnectionSettings({
       >
         {address}
       </p>
-      {disconnected && !storageError && !statusKey && (
+      {unpaired && (
+        <p
+          className="mt-2 text-xs leading-snug text-muted-foreground"
+          data-slot="popup-berry-pair-hint"
+        >
+          {t("popup.berryPairHint")}
+        </p>
+      )}
+      {!unpaired && disconnected && !storageError && !statusKey && (
         <p
           className="mt-2 text-xs leading-snug text-muted-foreground"
           data-slot="popup-daemon-unreachable"
@@ -216,6 +284,8 @@ export function ConnectionSettings({
       <details
         className="mt-3 border-t border-border/70 pt-2.5"
         data-slot="popup-connection-settings"
+        open={settingsOpen ?? unpaired}
+        onToggle={(event) => setSettingsOpen(event.currentTarget.open)}
       >
         <summary className="cursor-pointer text-sm font-medium">
           {t("popup.connectionSettings")}
@@ -229,26 +299,24 @@ export function ConnectionSettings({
               {t("popup.remoteExpires", { date: new Date(connection.expiresAt).toLocaleString() })}
             </p>
           )}
-          <div
-            role="group"
-            aria-label={t("popup.connectionMode")}
-            className="flex rounded-lg bg-muted/60 p-1"
-          >
-            {(["local", "remote"] as const).map((value) => (
-              <Button
-                key={value}
-                type="button"
-                size="sm"
-                variant="ghost"
-                aria-pressed={mode === value}
-                disabled={!ready || busy}
-                onClick={() => select(value)}
-                className={`h-8 min-w-0 flex-1 rounded-md text-xs ${mode === value ? "bg-background shadow-sm" : "text-muted-foreground"}`}
-              >
-                {t(value === "local" ? "popup.connectionLocal" : "popup.connectionRemote")}
-              </Button>
-            ))}
-          </div>
+          {mode === "local" && (
+            <div className="space-y-2" data-slot="popup-local-mode">
+              <p className="text-xs leading-snug text-muted-foreground">
+                {t("popup.localAdvancedHint")}
+              </p>
+              {!switchingToLocal && (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  disabled={!ready || busy}
+                  onClick={() => select("remote")}
+                >
+                  {t("popup.backToRemote")}
+                </Button>
+              )}
+            </div>
+          )}
           <form
             onSubmit={(event) => {
               event.preventDefault();
@@ -401,6 +469,29 @@ export function ConnectionSettings({
               </p>
             )}
           </form>
+          {mode === "remote" && (
+            <details
+              className="rounded-lg border border-border/70 px-3 py-2"
+              data-slot="popup-local-advanced"
+            >
+              <summary className="cursor-pointer text-xs text-muted-foreground">
+                {t("popup.localAdvanced")}
+              </summary>
+              <p className="mt-2 text-xs leading-snug text-muted-foreground">
+                {t("popup.localAdvancedHint")}
+              </p>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                className="mt-2"
+                disabled={!ready || busy}
+                onClick={() => select("local")}
+              >
+                {t("popup.localAdvancedSwitch")}
+              </Button>
+            </details>
+          )}
         </div>
       </details>
     </>

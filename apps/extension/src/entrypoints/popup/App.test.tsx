@@ -89,7 +89,7 @@ describe("App", () => {
     });
     render(<App />);
     expect(await screen.findByText("当前任务")).toBeTruthy();
-    expect(screen.getByRole("switch", { name: "BrowserSkill 连接" })).toBeTruthy();
+    expect(screen.getByRole("switch", { name: "BerryBrowser 连接" })).toBeTruthy();
     expect(screen.getByRole("switch", { name: "借用标签页前确认" })).toBeTruthy();
     expect(screen.getByRole("switch", { name: "允许请求人工协助" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "快捷功能" })).toBeTruthy();
@@ -122,10 +122,10 @@ describe("App", () => {
     expect(screen.queryByText("无法连接，请确认 daemon 已启动且端口一致。")).toBeNull();
     expect(screen.queryByText("端口不匹配")).toBeNull();
     expect(
-      screen.getByRole("switch", { name: "BrowserSkill 连接" }).getAttribute("aria-checked"),
+      screen.getByRole("switch", { name: "BerryBrowser 连接" }).getAttribute("aria-checked"),
     ).toBe("true");
     expect(screen.getByText("version_too_old: protocol-major mismatch")).toBeTruthy();
-    fireEvent.click(screen.getByRole("switch", { name: "BrowserSkill 连接" }));
+    fireEvent.click(screen.getByRole("switch", { name: "BerryBrowser 连接" }));
     expect(setConnectionEnabled).toHaveBeenCalledWith(false);
   });
 
@@ -231,7 +231,7 @@ describe("App", () => {
 
     render(<App />);
 
-    const toggle = screen.getByRole("switch", { name: "BrowserSkill 连接" });
+    const toggle = screen.getByRole("switch", { name: "BerryBrowser 连接" });
     expect(toggle.getAttribute("aria-checked")).toBe("true");
   });
 
@@ -245,7 +245,7 @@ describe("App", () => {
 
     render(<App />);
 
-    fireEvent.click(screen.getByRole("switch", { name: "BrowserSkill 连接" }));
+    fireEvent.click(screen.getByRole("switch", { name: "BerryBrowser 连接" }));
     expect(setConnectionEnabled).toHaveBeenCalledWith(false);
   });
 
@@ -262,7 +262,7 @@ describe("App", () => {
     expect(screen.getByText("连接已关闭")).toBeTruthy();
     expect(screen.queryByText("无法连接，请确认 daemon 已启动且端口一致。")).toBeNull();
     expect(
-      screen.getByRole("switch", { name: "BrowserSkill 连接" }).getAttribute("aria-checked"),
+      screen.getByRole("switch", { name: "BerryBrowser 连接" }).getAttribute("aria-checked"),
     ).toBe("false");
   });
 
@@ -553,7 +553,7 @@ describe("control hints toggle", () => {
     render(<App />);
 
     const hintsToggle = await screen.findByRole("switch", { name: "控制提示" });
-    const connectionToggle = screen.getByRole("switch", { name: "BrowserSkill 连接" });
+    const connectionToggle = screen.getByRole("switch", { name: "BerryBrowser 连接" });
     // One shared Switch component, one size — hierarchy comes from copy and
     // the info icon, not control size. Both rows default to checked, so the
     // class strings must be identical.
@@ -563,6 +563,7 @@ describe("control hints toggle", () => {
 });
 
 describe("daemon port input", () => {
+  // BerryBrowser: the port form belongs to the opt-in local mode (berryLocalMode).
   function stubChromeStorage(initial: Record<string, unknown> = {}) {
     const store = { ...initial };
     vi.stubGlobal("chrome", {
@@ -597,7 +598,7 @@ describe("daemon port input", () => {
   });
 
   it("prefills the port from storage", async () => {
-    stubChromeStorage({ [STORAGE_KEYS.DAEMON_PORT]: 53200 });
+    stubChromeStorage({ [STORAGE_KEYS.DAEMON_PORT]: 53200, berryLocalMode: true });
 
     render(<App />);
     fireEvent.click(screen.getByText("连接设置"));
@@ -607,7 +608,7 @@ describe("daemon port input", () => {
   });
 
   it("persists a valid port with the save button", async () => {
-    const store = stubChromeStorage();
+    const store = stubChromeStorage({ berryLocalMode: true });
 
     render(<App />);
     fireEvent.click(screen.getByText("连接设置"));
@@ -622,7 +623,7 @@ describe("daemon port input", () => {
   });
 
   it("persists a valid port on Enter", async () => {
-    const store = stubChromeStorage();
+    const store = stubChromeStorage({ berryLocalMode: true });
 
     render(<App />);
     fireEvent.click(screen.getByText("连接设置"));
@@ -636,7 +637,7 @@ describe("daemon port input", () => {
   });
 
   it("shows an error and does not write invalid ports", async () => {
-    const store = stubChromeStorage();
+    const store = stubChromeStorage({ berryLocalMode: true });
 
     render(<App />);
     fireEvent.click(screen.getByText("连接设置"));
@@ -651,7 +652,7 @@ describe("daemon port input", () => {
   });
 
   it("stores the default port when the field is cleared", async () => {
-    const store = stubChromeStorage({ [STORAGE_KEYS.DAEMON_PORT]: 53200 });
+    const store = stubChromeStorage({ [STORAGE_KEYS.DAEMON_PORT]: 53200, berryLocalMode: true });
 
     render(<App />);
     fireEvent.click(screen.getByText("连接设置"));
@@ -666,7 +667,7 @@ describe("daemon port input", () => {
   });
 
   it("keeps the port hint copy in an accessible info tooltip", async () => {
-    stubChromeStorage();
+    stubChromeStorage({ berryLocalMode: true });
 
     render(<App />);
     fireEvent.click(screen.getByText("连接设置"));

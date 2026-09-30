@@ -237,6 +237,7 @@ export function App() {
             <ConnectionSettings
               connectionEnabled={snapshot.connectionEnabled}
               disconnected={isDisconnected && !snapshot.lastError}
+              connected={connectionLive}
             />
             <BrowserLabel
               label={snapshot.label}

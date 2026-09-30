@@ -128,7 +128,13 @@
       "copyButton": "Copy profile instructions",
       "copyFailed": "Could not copy the instructions. Please try again.",
       "promptTemplate": "Use BerryBrowser in this browser profile for this task. Start every new session for this task with the appropriate interface:\nCLI: {{command}}\nDeepSeek Harness: {{toolCall}}\nIn DeepSeek Harness, use the tool call instead of running the CLI command separately.\nIf this instance is not connected, stop and ask me to reconnect this profile. Do not omit --browser / browser or switch to another instance."
-    }
+    },
+    "berryUnpaired": "Not paired with OneBerryWiki yet",
+    "berryPairHint": "In OneBerryWiki, open Skills · MCP · Connectors → Connectors, copy the pairing link and paste it into Pairing link below.",
+    "localAdvanced": "Connect a local agent (advanced)",
+    "localAdvancedHint": "For agents running on this computer, such as OneBerry or Claude Code. Requires the bsk daemon running locally. Switching removes the OneBerryWiki pairing; returning to remote needs a new pairing link.",
+    "localAdvancedSwitch": "Use local connection",
+    "backToRemote": "Back to remote pairing"
   },
   "controlOverlay": {
     "status": "Agent controlling",
