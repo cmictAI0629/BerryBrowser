@@ -134,7 +134,8 @@
     "localAdvanced": "Connecter un agent local (avancé)",
     "localAdvancedHint": "Pour les agents exécutés sur cet ordinateur, comme OneBerry ou Claude Code. Le démon bsk doit tourner en local. Le changement supprime le couplage OneBerryWiki ; revenir au mode distant nécessite un nouveau lien de couplage.",
     "localAdvancedSwitch": "Utiliser la connexion locale",
-    "backToRemote": "Revenir au couplage distant"
+    "backToRemote": "Revenir au couplage distant",
+    "browserIdentity": "Identité du navigateur (plusieurs navigateurs)"
   },
   "controlOverlay": {
     "status": "L'Agent contrôle",

@@ -134,7 +134,8 @@
     "localAdvanced": "Connect a local agent (advanced)",
     "localAdvancedHint": "For agents running on this computer, such as OneBerry or Claude Code. Requires the bsk daemon running locally. Switching removes the OneBerryWiki pairing; returning to remote needs a new pairing link.",
     "localAdvancedSwitch": "Use local connection",
-    "backToRemote": "Back to remote pairing"
+    "backToRemote": "Back to remote pairing",
+    "browserIdentity": "Browser identity (for multiple browsers)"
   },
   "controlOverlay": {
     "status": "Agent controlling",

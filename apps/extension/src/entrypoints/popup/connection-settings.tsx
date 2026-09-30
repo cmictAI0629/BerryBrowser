@@ -284,7 +284,7 @@ export function ConnectionSettings({
       <details
         className="mt-3 border-t border-border/70 pt-2.5"
         data-slot="popup-connection-settings"
-        open={settingsOpen ?? unpaired}
+        open={settingsOpen ?? true}
         onToggle={(event) => setSettingsOpen(event.currentTarget.open)}
       >
         <summary className="cursor-pointer text-sm font-medium">

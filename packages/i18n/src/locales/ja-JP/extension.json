@@ -134,7 +134,8 @@
     "localAdvanced": "ローカルエージェントに接続（詳細）",
     "localAdvancedHint": "OneBerry や Claude Code など、このコンピューターで動くエージェント向けです。ローカルで bsk デーモンを起動しておく必要があります。切り替えると OneBerryWiki とのペアリングは解除され、リモートに戻すには新しいペアリングリンクが必要です。",
     "localAdvancedSwitch": "ローカル接続を使う",
-    "backToRemote": "リモートのペアリングに戻す"
+    "backToRemote": "リモートのペアリングに戻す",
+    "browserIdentity": "ブラウザー識別（複数のブラウザーを使う場合）"
   },
   "controlOverlay": {
     "status": "エージェントが操作中",

@@ -21,6 +21,9 @@ BerryBrowser is the browser extension used by [OneBerryWiki](https://github.com/
   `apps/extension/src/entrypoints/popup/connection-settings.tsx`. The `berryLocalMode` storage flag
   records an explicit local choice (set automatically when a local connection is already live).
   Popup tests follow this UI; `remote-endpoint.test.ts` expects `ws://` on any host.
+- Connection settings are expanded by default; the browser name and profile instructions (only needed
+  when an agent picks among several browsers) moved into a collapsed "browser identity" section in
+  `popup/App.tsx`.
 
 ## Branches and versions
 

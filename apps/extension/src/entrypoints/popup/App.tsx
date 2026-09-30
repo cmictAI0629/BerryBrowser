@@ -239,12 +239,22 @@ export function App() {
               disconnected={isDisconnected && !snapshot.lastError}
               connected={connectionLive}
             />
-            <BrowserLabel
-              label={snapshot.label}
-              sessionCount={snapshot.sessionCount}
-              onSave={setLabel}
-            />
-            <ProfileInstructions instanceId={snapshot.instanceId} connected={connectionLive} />
+            {/* BerryBrowser: naming the browser and copying profile instructions only matter when an
+                agent must pick among several browsers, so they sit in a collapsed section. */}
+            <details
+              className="mt-3 border-t border-border/70 pt-2.5"
+              data-slot="popup-browser-identity"
+            >
+              <summary className="cursor-pointer text-sm font-medium">
+                {t("popup.browserIdentity")}
+              </summary>
+              <BrowserLabel
+                label={snapshot.label}
+                sessionCount={snapshot.sessionCount}
+                onSave={setLabel}
+              />
+              <ProfileInstructions instanceId={snapshot.instanceId} connected={connectionLive} />
+            </details>
           </section>
 
           <section

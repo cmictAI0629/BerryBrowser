@@ -134,7 +134,8 @@
     "localAdvanced": "Collega un agente locale (avanzato)",
     "localAdvancedHint": "Per agenti in esecuzione su questo computer, come OneBerry o Claude Code. Richiede il daemon bsk in esecuzione in locale. Il passaggio rimuove l’associazione con OneBerryWiki; tornare al remoto richiede un nuovo link di associazione.",
     "localAdvancedSwitch": "Usa connessione locale",
-    "backToRemote": "Torna all’associazione remota"
+    "backToRemote": "Torna all’associazione remota",
+    "browserIdentity": "Identità del browser (con più browser)"
   },
   "controlOverlay": {
     "status": "L'agente sta controllando",

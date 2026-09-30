@@ -134,7 +134,8 @@
     "localAdvanced": "連接本機 Agent（進階）",
     "localAdvancedHint": "供 OneBerry、Claude Code 等在本機執行的智慧體使用，需要先在本機執行 bsk 背景程式。切換後會解除與 OneBerryWiki 的配對，改回遠端需要重新貼上配對連結。",
     "localAdvancedSwitch": "改用本機連接",
-    "backToRemote": "改回遠端配對"
+    "backToRemote": "改回遠端配對",
+    "browserIdentity": "瀏覽器識別（多個瀏覽器時使用）"
   },
   "controlOverlay": {
     "status": "Agent 正在控制",
