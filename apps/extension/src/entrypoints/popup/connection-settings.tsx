@@ -287,8 +287,13 @@ export function ConnectionSettings({
         open={settingsOpen ?? true}
         onToggle={(event) => setSettingsOpen(event.currentTarget.open)}
       >
-        <summary className="cursor-pointer text-sm font-medium">
-          {t("popup.connectionSettings")}
+        <summary className="cursor-pointer text-xs text-muted-foreground">
+          <span>{t("popup.connectionSettings")}</span>
+          {ready && !storageError && !unpaired && (
+            <span className="ml-2">
+              · {t(activeMode === "local" ? "popup.connectionLocal" : "popup.connectionRemote")}
+            </span>
+          )}
           {needsAttention && (
             <span className="ml-2 text-xs text-destructive">{t("popup.remoteNeedsAttention")}</span>
           )}

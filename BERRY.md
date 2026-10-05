@@ -22,8 +22,11 @@ BerryBrowser is the browser extension used by [OneBerryWiki](https://github.com/
   records an explicit local choice (set automatically when a local connection is already live).
   Popup tests follow this UI; `remote-endpoint.test.ts` expects `ws://` on any host.
 - Connection settings are expanded by default; the browser name and profile instructions (only needed
-  when an agent picks among several browsers) moved into a collapsed "browser identity" section in
-  `popup/App.tsx`.
+  when an agent picks among several browsers) sit in a collapsed "browser identity" section in
+  `popup/App.tsx` (since 0.3.2 this wraps upstream's `BrowserProfile`). The current address stays above
+  the settings, and the summary names the mode only once paired or opted into local.
+- Locale merges: berry only renames BrowserSkill → BerryBrowser in upstream strings; when both sides
+  change a string, take upstream's text and re-apply the rename.
 
 ## Branches and versions
 

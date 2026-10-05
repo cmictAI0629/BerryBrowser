@@ -80,7 +80,10 @@ jobs:
           node scripts/check-crate-skill.mjs
 
       - name: Run Windows update tests
-        run: cargo test -p bsk --lib --locked cli::update::tests
+        run: |
+          cargo test -p bsk --lib --locked cli::update::
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cargo test -p bsk --test auto_update_policy --locked
 
       - name: Run Windows cancellation process tests
         run: cargo test -p bsk --test windows_parent_cancel --locked
@@ -96,7 +99,7 @@ jobs:
   windows-daemon-lifecycle:
     name: Windows independent daemon and update lifecycle
     runs-on: windows-latest
-    timeout-minutes: 20
+    timeout-minutes: 45
 
     steps:
       - uses: actions/checkout@v6
@@ -183,6 +186,27 @@ jobs:
           New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
           node scripts/check-dsh-package.mjs
 
+  browser-download:
+    name: Browser download cancellation regression
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Prepare extension types
+        run: pnpm --filter @browser-skill/extension exec wxt prepare
+      - name: Run download cancellation browser regression
+        working-directory: apps/extension
+        env:
+          BSK_CLICK_CHROME: google-chrome
+        run: pnpm exec vitest run src/tools/__tests__/download-deadline.browser.test.ts
+
   browser-input:
     name: Browser input readiness regression
     runs-on: ubuntu-latest
@@ -203,11 +227,23 @@ jobs:
       - name: Prepare extension types
         run: pnpm --filter @browser-skill/extension exec wxt prepare
 
+      - name: Run download-effect-state browser regression
+        working-directory: apps/extension
+        env:
+          BSK_CLICK_CHROME: google-chrome
+        run: pnpm exec vitest run src/tools/__tests__/download-effect-state.browser.test.ts
+
       - name: Run browser input and debugging regressions
         working-directory: apps/extension
         env:
           BSK_CLICK_CHROME: google-chrome
-        run: pnpm exec vitest run src/tools/__tests__/click.browser.test.ts src/tools/__tests__/observation-layers.browser.test.ts src/debug/__tests__/*.browser.test.ts
+        run: pnpm exec vitest run src/tools/__tests__/*click*.browser.test.ts src/tools/__tests__/observation-layers.browser.test.ts src/debug/__tests__/*.browser.test.ts
+
+      - name: Run emulation-lifecycle browser regression
+        working-directory: apps/extension
+        env:
+          BSK_CLICK_CHROME: google-chrome
+        run: pnpm exec vitest run src/tools/__tests__/emulation-lifecycle.browser.test.ts
 
   node-scripts:
     name: Node script tests

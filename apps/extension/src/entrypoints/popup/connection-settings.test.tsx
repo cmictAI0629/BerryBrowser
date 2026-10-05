@@ -99,6 +99,27 @@ function submit() {
   fireEvent.submit(document.querySelector("form")!);
 }
 
+// BerryBrowser: settings stay open, the address sits above them, and the summary names the mode
+// only once there is a connection to name (upstream 0.3.2 collapses them instead).
+it("shows the mode in the summary and keeps the address above the open settings", async () => {
+  const { container } = render(<ConnectionSettings connectionEnabled connected />);
+  const details = container.querySelector("details")!;
+  const summary = details.querySelector("summary")!;
+  await waitFor(() => expect(summary.textContent).toContain("本机"));
+  expect(details.open).toBe(true);
+  expect(summary.textContent).not.toContain("ws://");
+  expect(details.querySelector('[data-slot="popup-current-connection"]')).toBeNull();
+  expect(currentConnection()).toBe("本机 · ws://127.0.0.1:52800");
+});
+
+it("does not name a mode in the summary while unpaired", async () => {
+  const { container } = render(<ConnectionSettings connectionEnabled />);
+  await waitFor(() => expect(currentConnection()).toBe("还没有和 OneBerryWiki 配对"));
+  const summary = container.querySelector("summary")!;
+  expect(summary.textContent).not.toContain("本机");
+  expect(summary.textContent).not.toContain("远程");
+});
+
 it("leads with pairing when unpaired and cancels local and pairing drafts without writes", async () => {
   render(<ConnectionSettings connectionEnabled />);
   await waitFor(() => expect(currentConnection()).toBe("还没有和 OneBerryWiki 配对"));
